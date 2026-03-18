@@ -1,35 +1,41 @@
 import { createContext, useContext, useState, useEffect } from 'react'
-import { authAPI } from '../services/api'
+import { authAPI, getToken, setToken } from '../services/api'
 
 const AuthContext = createContext(null)
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null)
+  const [user,    setUser]    = useState(null)
   const [loading, setLoading] = useState(true)
 
+  // Au démarrage : si un token existe, vérifier qu'il est encore valide
   useEffect(() => {
+    if (!getToken()) {
+      setLoading(false)
+      return
+    }
     authAPI.me()
       .then(res => setUser(res.data || null))
-      .catch(() => setUser(null))
+      .catch(() => { setToken(null); setUser(null) })
       .finally(() => setLoading(false))
   }, [])
 
   async function login(username, password) {
     const res = await authAPI.login(username, password)
-    // Recharger /auth/me pour avoir is_admin
-    const me = await authAPI.me()
-    setUser(me.data)
+    setToken(res.data?.token)
+    setUser(res.data)
     return res
   }
 
   async function register(username, password) {
     const res = await authAPI.register(username, password)
+    setToken(res.data?.token)
     setUser(res.data)
     return res
   }
 
   async function logout() {
-    await authAPI.logout()
+    await authAPI.logout().catch(() => {})
+    setToken(null)
     setUser(null)
   }
 
