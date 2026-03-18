@@ -25,10 +25,10 @@ async function request(method, endpoint, data = null, isFormData = false) {
   if (data && !isFormData) options.body = JSON.stringify(data)
   if (data && isFormData)  options.body = data
 
-  // Pour les FormData, passer aussi le token en query param
-  // (fallback si Apache stripe le header Authorization)
+  // Passer le token en query param pour toutes les requêtes authentifiées
+  // (Apache/OVH stripe le header Authorization)
   let url = `${BASE_URL}${endpoint}`
-  if (isFormData && token) {
+  if (token) {
     const sep = url.includes('?') ? '&' : '?'
     url += `${sep}_token=${encodeURIComponent(token)}`
   }
