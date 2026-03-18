@@ -93,15 +93,15 @@ export function ReviewCard({ review, showDrink = true }) {
 
       {/* Zone visuelle */}
       <div className="review-card-top-area">
-        {/* Image boisson à gauche — uniquement si pas de médias uploadés */}
-        {showDrink && drinkImg && !hasUploadedMedia && (
-          <Link to={`/monsters/${review.drink_slug}`} className="review-card-drink-link">
-            <img src={drinkImg} alt={review.drink_name} className="review-card-drink-img" />
-          </Link>
-        )}
-
-        {/* Zone médias */}
-        {hasUploadedMedia ? (
+        {!hasUploadedMedia ? (
+          /* Pas de médias — image boisson centrée pleine largeur */
+          showDrink && drinkImg ? (
+            <Link to={`/monsters/${review.drink_slug}`} className="review-card-fallback">
+              <img src={drinkImg} alt={review.drink_name} />
+            </Link>
+          ) : null
+        ) : (
+          /* Médias uploadés — galerie */
           <div className={`review-card-gallery count-${Math.min(displayMedia.length, 4)}`}>
             {displayMedia.map((m, i) => {
               const mediaIndex = allMedia.findIndex(am => am.url === m.url)
@@ -122,7 +122,7 @@ export function ReviewCard({ review, showDrink = true }) {
               )
             })}
           </div>
-        ) : null}
+        )}
       </div>
 
       {/* Corps */}
