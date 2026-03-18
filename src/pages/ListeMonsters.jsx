@@ -10,38 +10,37 @@ const STATUS_TABS = [
 ]
 
 export default function ListeMonsters() {
-  const [drinks, setDrinks] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
-  const [status, setStatus] = useState('all')
-  const [search, setSearch] = useState('')
-  const [page, setPage] = useState(1)
+  const [drinks,     setDrinks]     = useState([])
+  const [categories, setCategories] = useState([])
+  const [loading,    setLoading]    = useState(true)
+  const [error,      setError]      = useState('')
+  const [status,     setStatus]     = useState('all')
+  const [category,   setCategory]   = useState('')
+  const [search,     setSearch]     = useState('')
+  const [page,       setPage]       = useState(1)
   const [totalPages, setTotalPages] = useState(1)
-  const [total, setTotal] = useState(0)
+  const [total,      setTotal]      = useState(0)
 
   useEffect(() => {
     setLoading(true)
     const params = { status, page, limit: 24 }
-    if (search) params.search = search
+    if (search)   params.search   = search
+    if (category) params.category = category
     drinksAPI.list(params)
       .then(r => {
         setDrinks(r.data?.drinks || [])
         setTotalPages(r.data?.total_pages || 1)
         setTotal(r.data?.total || 0)
+        // Mettre à jour les catégories seulement au premier chargement
+        if (r.data?.categories?.length) setCategories(r.data.categories)
       })
       .catch(e => setError(e.message))
       .finally(() => setLoading(false))
-  }, [status, search, page])
+  }, [status, category, search, page])
 
-  function handleSearch(e) {
-    setSearch(e.target.value)
-    setPage(1)
-  }
-
-  function handleStatus(s) {
-    setStatus(s)
-    setPage(1)
-  }
+  function handleSearch(e)  { setSearch(e.target.value); setPage(1) }
+  function handleStatus(s)  { setStatus(s);   setPage(1) }
+  function handleCategory(c){ setCategory(c); setPage(1) }
 
   return (
     <div className="page">
@@ -51,7 +50,7 @@ export default function ListeMonsters() {
           <span className="total-count">{total} boissons</span>
         </div>
 
-        {/* Filtres */}
+        {/* Ligne 1 : statut + recherche */}
         <div className="monsters-filters">
           <div className="status-tabs">
             {STATUS_TABS.map(t => (
@@ -73,6 +72,27 @@ export default function ListeMonsters() {
           />
         </div>
 
+        {/* Ligne 2 : catégories */}
+        {categories.length > 0 && (
+          <div className="category-filters">
+            <button
+              className={`cat-btn ${category === '' ? 'active' : ''}`}
+              onClick={() => handleCategory('')}
+            >
+              Toutes les gammes
+            </button>
+            {categories.map(c => (
+              <button
+                key={c}
+                className={`cat-btn ${category === c ? 'active' : ''}`}
+                onClick={() => handleCategory(c)}
+              >
+                {c}
+              </button>
+            ))}
+          </div>
+        )}
+
         <ErrorMsg message={error} />
 
         {loading ? (
@@ -81,6 +101,11 @@ export default function ListeMonsters() {
           <div className="empty-state">
             <span>☣</span>
             <p>Aucune boisson trouvée.</p>
+            {(category || search) && (
+              <button className="btn btn-ghost btn-sm" onClick={() => { setCategory(''); setSearch('') }}>
+                Réinitialiser les filtres
+              </button>
+            )}
           </div>
         ) : (
           <div className="grid-3">

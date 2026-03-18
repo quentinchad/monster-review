@@ -3,7 +3,7 @@
   background: var(--surface2); padding: 3px 12px;
   border-radius: 20px; align-self: center; border: 1px solid var(--border);
 }
-.monsters-filters { display: flex; gap: 10px; align-items: center; margin-bottom: 32px; flex-wrap: wrap; }
+.monsters-filters { display: flex; gap: 10px; align-items: center; margin-bottom: 12px; flex-wrap: wrap; }
 .status-tabs { display: flex; gap: 4px; }
 .tab-btn {
   padding: 7px 16px; border-radius: var(--radius);
@@ -16,3 +16,25 @@
 .tab-btn:hover { color: var(--text); border-color: var(--border-hover); background: var(--surface2); }
 .tab-btn.active { background: var(--accent); color: var(--surface); border-color: var(--accent); }
 .search-input { max-width: 260px; }
+
+/* Filtres catégories */
+.category-filters {
+  display: flex; gap: 6px; flex-wrap: wrap;
+  margin-bottom: 24px;
+  padding: 12px 14px;
+  background: var(--surface2);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+}
+.cat-btn {
+  padding: 5px 14px; border-radius: 20px;
+  border: 1px solid var(--border);
+  background: var(--surface); color: var(--text-muted);
+  font-size: 11px; font-weight: 600; cursor: pointer;
+  transition: all var(--transition); white-space: nowrap;
+}
+.cat-btn:hover { color: var(--text); border-color: var(--border-hover); }
+.cat-btn.active {
+  background: var(--accent); color: var(--surface);
+  border-color: var(--accent); font-weight: 700;
+}
