@@ -14,6 +14,14 @@ export function setToken(token) {
 }
 
 // ─── Requête générique ───────────────────────────────────────
+// Routes publiques qui ne nécessitent pas de token
+const PUBLIC_ROUTES = ['/drinks', '/reviews', '/rankings']
+
+function isPublicRoute(endpoint) {
+  return PUBLIC_ROUTES.some(r => endpoint.startsWith(r)) &&
+    ['GET'].includes(arguments[0]) // méthode
+}
+
 async function request(method, endpoint, data = null, isFormData = false) {
   const token = getToken()
   const headers = {}
@@ -25,10 +33,12 @@ async function request(method, endpoint, data = null, isFormData = false) {
   if (data && !isFormData) options.body = JSON.stringify(data)
   if (data && isFormData)  options.body = data
 
-  // Passer le token en query param pour toutes les requêtes authentifiées
-  // (Apache/OVH stripe le header Authorization)
+  // Ajouter _token en query param pour les requêtes authentifiées
+  // (Apache stripe le header Authorization sur OVH)
+  // Ne PAS l'ajouter pour les GET publics car le JWT dans l'URL peut causer des erreurs
   let url = `${BASE_URL}${endpoint}`
-  if (token) {
+  const isPublicGet = method === 'GET' && PUBLIC_ROUTES.some(r => endpoint.startsWith(r))
+  if (token && !isPublicGet) {
     const sep = url.includes('?') ? '&' : '?'
     url += `${sep}_token=${encodeURIComponent(token)}`
   }
@@ -130,4 +140,3 @@ export const adminAPI = {
     return request('POST', `/admin/drinks/${id}`, formData, true)
   },
 }
-
