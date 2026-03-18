@@ -1,0 +1,59 @@
+.admin-header {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: 20px; margin-bottom: 32px; flex-wrap: wrap;
+}
+.admin-subtitle { color: var(--text-muted); font-size: 14px; margin-top: 4px; }
+
+/* Formulaire */
+.drink-form { margin-bottom: 36px; }
+.drink-form-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 24px; border-bottom: 1px solid var(--border);
+}
+.drink-form-header h3 { font-size: 1.1rem; }
+.drink-form-body {
+  padding: 24px; display: flex; flex-direction: column; gap: 18px;
+}
+
+.form-image-row { display: flex; gap: 20px; align-items: flex-start; }
+.form-image-preview {
+  width: 100px; height: 100px; flex-shrink: 0;
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: var(--radius); display: flex; align-items: center; justify-content: center;
+  overflow: hidden; font-size: 36px; color: var(--surface4);
+}
+.form-image-preview img { width: 100%; height: 100%; object-fit: contain; padding: 8px; }
+.form-image-inputs { flex: 1; display: flex; flex-direction: column; gap: 12px; }
+
+.form-grid-2 { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
+.form-grid-3 { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px; }
+
+.form-section-title {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 1.2px;
+  color: var(--text-muted); font-weight: 700;
+  padding-bottom: 8px; border-bottom: 1px solid var(--border);
+}
+
+/* Liste boissons */
+.admin-drinks-list { display: flex; flex-direction: column; gap: 8px; }
+.admin-drink-row {
+  display: flex; align-items: center; gap: 16px;
+  padding: 12px 16px; border-radius: var(--radius-lg);
+}
+.admin-drink-img {
+  width: 52px; height: 52px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--surface2); border-radius: var(--radius);
+  font-size: 24px; color: var(--surface4); overflow: hidden;
+}
+.admin-drink-img img { width: 100%; height: 100%; object-fit: contain; padding: 4px; }
+.admin-drink-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+.admin-drink-name { font-weight: 700; font-size: 14px; }
+.admin-drink-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.admin-drink-year { font-size: 11px; color: var(--text-dim); }
+.admin-drink-reviews { font-size: 11px; color: var(--text-dim); }
+
+@media (max-width: 600px) {
+  .form-image-row { flex-direction: column; }
+  .form-image-preview { width: 80px; height: 80px; }
+}

@@ -1,0 +1,6 @@
+.form-page { max-width: 660px; margin: 0 auto; }
+.auth-required { text-align: center; padding: 80px 20px; display: flex; flex-direction: column; gap: 16px; align-items: center; }
+.review-form { display: flex; flex-direction: column; gap: 28px; margin-top: 32px; }
+.ratings-section h3 { margin-bottom: 16px; }
+.ratings-grid { display: flex; flex-direction: column; gap: 22px; }
+.file-input { cursor: pointer; }
