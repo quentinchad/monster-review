@@ -130,3 +130,4 @@ export const adminAPI = {
     return request('POST', `/admin/drinks/${id}`, formData, true)
   },
 }
+
