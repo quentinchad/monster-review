@@ -73,9 +73,10 @@ export function MediaLightbox({ items, startIndex = 0, onClose }) {
                 <video
                   ref={videoRef}
                   controls
-                  autoPlay
+                  playsInline
                   className="lightbox-video"
                   onClick={e => e.stopPropagation()}
+                  onCanPlay={e => e.target.play().catch(() => {})}
                 >
                   <source src={current.url} type="video/mp4" />
                   <source src={current.url} type="video/webm" />
