@@ -25,7 +25,15 @@ async function request(method, endpoint, data = null, isFormData = false) {
   if (data && !isFormData) options.body = JSON.stringify(data)
   if (data && isFormData)  options.body = data
 
-  const res  = await fetch(`${BASE_URL}${endpoint}`, options)
+  // Pour les FormData, passer aussi le token en query param
+  // (fallback si Apache stripe le header Authorization)
+  let url = `${BASE_URL}${endpoint}`
+  if (isFormData && token) {
+    const sep = url.includes('?') ? '&' : '?'
+    url += `${sep}_token=${encodeURIComponent(token)}`
+  }
+
+  const res  = await fetch(url, options)
   const json = await res.json()
 
   if (!json.success && res.status >= 400) {
