@@ -93,7 +93,7 @@ export function ReviewCard({ review, showDrink = true }) {
 
       {/* Zone visuelle */}
       <div className="review-card-top-area">
-        {/* Colonne gauche : image boisson UNIQUEMENT si pas de médias uploadés */}
+        {/* Image boisson à gauche — uniquement si pas de médias uploadés */}
         {showDrink && drinkImg && !hasUploadedMedia && (
           <Link to={`/monsters/${review.drink_slug}`} className="review-card-drink-link">
             <img src={drinkImg} alt={review.drink_name} className="review-card-drink-img" />
@@ -122,14 +122,6 @@ export function ReviewCard({ review, showDrink = true }) {
               )
             })}
           </div>
-        ) : fallbackImg ? (
-          /* Fallback : grande image de la boisson centrée */
-          <Link
-            to={`/monsters/${review.drink_slug}`}
-            className="review-card-fallback"
-          >
-            <img src={fallbackImg} alt={review.drink_name} />
-          </Link>
         ) : null}
       </div>
 
