@@ -95,7 +95,7 @@ export function ReviewCard({ review, showDrink = true }) {
       <div className="review-card-top-area">
         {!hasUploadedMedia ? (
           /* Pas de médias — image boisson centrée pleine largeur */
-          showDrink && drinkImg ? (
+          drinkImg ? (
             <Link to={`/monsters/${review.drink_slug}`} className="review-card-fallback">
               <img src={drinkImg} alt={review.drink_name} />
             </Link>
