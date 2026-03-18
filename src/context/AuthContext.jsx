@@ -7,15 +7,45 @@ export function AuthProvider({ children }) {
   const [user,    setUser]    = useState(null)
   const [loading, setLoading] = useState(true)
 
-  // Au démarrage : si un token existe, vérifier qu'il est encore valide
   useEffect(() => {
-    if (!getToken()) {
+    const token = getToken()
+    if (!token) {
       setLoading(false)
       return
     }
+
+    // Décoder le token localement d'abord — pas besoin de réseau
+    // Format JWT : header.payload.signature (base64url)
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')))
+      // Token expiré ?
+      if (payload.exp && payload.exp < Math.floor(Date.now() / 1000)) {
+        setToken(null)
+        setLoading(false)
+        return
+      }
+      // Token valide localement — restaurer l'utilisateur immédiatement
+      // sans attendre le réseau (évite la déconnexion sur réseau lent)
+      setUser({ id: payload.uid, username: payload.username })
+    } catch {
+      // Token malformé
+      setToken(null)
+      setLoading(false)
+      return
+    }
+
+    // Rafraîchir les infos depuis le serveur en arrière-plan
+    // (avatar, is_admin, etc.) — mais NE PAS déconnecter si ça échoue
     authAPI.me()
-      .then(res => setUser(res.data || null))
-      .catch(() => { setToken(null); setUser(null) })
+      .then(res => {
+        if (res.data) setUser(res.data)
+        // Si res.data est null → token valide mais user supprimé
+        // On garde quand même la session locale
+      })
+      .catch(() => {
+        // Erreur réseau → on garde l'utilisateur connecté avec les infos du token
+        // On ne déconnecte PAS
+      })
       .finally(() => setLoading(false))
   }, [])
 
