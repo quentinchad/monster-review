@@ -35,6 +35,28 @@ export function RatingInput({ label, value, onChange, color = '#2e7d52' }) {
   )
 }
 
+// --- Texte de review avec "Lire la suite" ---
+function ReviewText({ text, limit = 180 }) {
+  const [expanded, setExpanded] = useState(false)
+  const needsTruncate = text.length > limit
+
+  return (
+    <div className="review-card-text-wrap">
+      <p className="review-card-text">
+        {expanded || !needsTruncate ? text : text.slice(0, limit) + '…'}
+      </p>
+      {needsTruncate && (
+        <button
+          className="review-read-more"
+          onClick={e => { e.stopPropagation(); setExpanded(!expanded) }}
+        >
+          {expanded ? 'Réduire ▲' : 'Lire la suite ▼'}
+        </button>
+      )}
+    </div>
+  )
+}
+
 // --- Carte boisson ---
 export function DrinkCard({ drink }) {
   const img = drink.image || drink.image_url
@@ -143,7 +165,7 @@ export function ReviewCard({ review, showDrink = true }) {
         </div>
 
         {review.text_review && (
-          <p className="review-card-text">{truncate(review.text_review, 180)}</p>
+          <ReviewText text={review.text_review} limit={180} />
         )}
 
         <div className="review-card-footer">
