@@ -17,7 +17,10 @@
 /* Zone visuelle */
 .review-card-top-area {
   display:flex; background:var(--surface2);
-  overflow:hidden; min-height:130px;
+  overflow:hidden;
+  min-height:130px;
+  max-height:280px;
+  height:280px;
 }
 .review-card-drink-link { flex-shrink:0; display:block; }
 .review-card-drink-img {
