@@ -96,13 +96,48 @@ export const reviewsAPI = {
 
 // ─── Media ────────────────────────────────────────────────────
 export const mediaAPI = {
-  upload: (reviewId, file, isThumbnail = false) => {
-    const fd = new FormData()
-    fd.append('file', file)
-    fd.append('review_id', reviewId)
-    fd.append('is_thumbnail', isThumbnail ? '1' : '0')
-    return request('POST', '/media/upload', fd, true)
+  // Upload avec suivi de progression via XMLHttpRequest
+  upload: (reviewId, file, isThumbnail = false, onProgress = null) => {
+    return new Promise((resolve, reject) => {
+      const token = getToken()
+      const fd    = new FormData()
+      fd.append('file', file)
+      fd.append('review_id', reviewId)
+      fd.append('is_thumbnail', isThumbnail ? '1' : '0')
+
+      let url = `${BASE_URL}/media/upload`
+      if (token) url += `?_token=${encodeURIComponent(token)}`
+
+      const xhr = new XMLHttpRequest()
+      xhr.open('POST', url)
+      if (token) xhr.setRequestHeader('Authorization', `Bearer ${token}`)
+
+      // Progression
+      if (onProgress) {
+        xhr.upload.addEventListener('progress', e => {
+          if (e.lengthComputable) {
+            onProgress(Math.round((e.loaded / e.total) * 100))
+          }
+        })
+      }
+
+      xhr.onload = () => {
+        try {
+          const json = JSON.parse(xhr.responseText)
+          if (!json.success && xhr.status >= 400) {
+            reject(new Error(json.error || 'Erreur upload'))
+          } else {
+            resolve(json)
+          }
+        } catch {
+          reject(new Error('Réponse invalide du serveur'))
+        }
+      }
+      xhr.onerror = () => reject(new Error('Erreur réseau'))
+      xhr.send(fd)
+    })
   },
+
   uploadAvatar: (file) => {
     const fd = new FormData()
     fd.append('file', file)

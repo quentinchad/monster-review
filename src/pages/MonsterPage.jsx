@@ -28,6 +28,8 @@ function ReviewInlineForm({ drinkId, existing, onSaved, onCancel }) {
 
   const [submitting, setSubmitting] = useState(false)
   const [error,      setError]      = useState('')
+  // Progression upload : { index: N, total: N, percent: 0-100 }
+  const [uploadProgress, setUploadProgress] = useState(null)
 
   // Charger les médias de la review existante au montage
   useEffect(() => {
@@ -74,11 +76,15 @@ function ReviewInlineForm({ drinkId, existing, onSaved, onCancel }) {
         })
         reviewId = res.data?.id
       }
-      // Upload nouveaux fichiers
+      // Upload nouveaux fichiers avec progression
       for (let i = 0; i < newFiles.length; i++) {
         const isThumb = (thumbIdx === i) && existingMedia.length === 0
-        await mediaAPI.upload(reviewId, newFiles[i], isThumb)
+        setUploadProgress({ index: i + 1, total: newFiles.length, percent: 0 })
+        await mediaAPI.upload(reviewId, newFiles[i], isThumb, (pct) => {
+          setUploadProgress({ index: i + 1, total: newFiles.length, percent: pct })
+        })
       }
+      setUploadProgress(null)
       onSaved()
     } catch (err) {
       setError(err.message)
@@ -188,6 +194,22 @@ function ReviewInlineForm({ drinkId, existing, onSaved, onCancel }) {
             </div>
           )}
         </div>
+
+        {/* Progression upload */}
+        {uploadProgress && (
+          <div className="upload-progress-wrap">
+            <div className="upload-progress-label">
+              <span>📤 Envoi fichier {uploadProgress.index}/{uploadProgress.total}</span>
+              <span>{uploadProgress.percent}%</span>
+            </div>
+            <div className="upload-progress-bar">
+              <div
+                className="upload-progress-fill"
+                style={{ width: `${uploadProgress.percent}%` }}
+              />
+            </div>
+          </div>
+        )}
 
         {/* Actions */}
         <div className="rif-actions">

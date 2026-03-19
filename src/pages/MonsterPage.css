@@ -92,3 +92,26 @@
   letter-spacing: 0.5px; padding: 4px 0;
   align-self: center;
 }
+
+/* ── Barre de progression upload ── */
+.upload-progress-wrap {
+  display: flex; flex-direction: column; gap: 6px;
+  padding: 12px 14px;
+  background: var(--surface2);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+}
+.upload-progress-label {
+  display: flex; justify-content: space-between;
+  font-size: 12px; font-weight: 600; color: var(--text-muted);
+}
+.upload-progress-bar {
+  height: 6px; background: var(--surface4);
+  border-radius: 3px; overflow: hidden;
+}
+.upload-progress-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 3px;
+  transition: width 0.15s ease;
+}
