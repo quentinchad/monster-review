@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import './MediaLightbox.css'
 
 // ── Détection navigateur ────────────────────────────────────
@@ -14,6 +14,7 @@ function canPlayMp4() {
 // ── Lightbox complète image + vidéo ─────────────────────────
 export function MediaLightbox({ items, startIndex = 0, onClose }) {
   const [idx, setIdx] = useState(startIndex)
+  const videoRef = useRef(null)
 
   const current = items[idx]
   const isVideo = current?.type === 'video'
@@ -29,6 +30,13 @@ export function MediaLightbox({ items, startIndex = 0, onClose }) {
     return () => window.removeEventListener('keydown', onKey)
   }, [items.length, onClose])
 
+  // Pause vidéo quand on change de slide
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.pause()
+      videoRef.current.currentTime = 0
+    }
+  }, [idx])
 
   function prev(e) { e.stopPropagation(); setIdx(i => Math.max(i - 1, 0)) }
   function next(e) { e.stopPropagation(); setIdx(i => Math.min(i + 1, items.length - 1)) }
@@ -63,7 +71,6 @@ export function MediaLightbox({ items, startIndex = 0, onClose }) {
                 </div>
               ) : (
                 <video
-                  key={current.url}
                   ref={videoRef}
                   controls
                   playsInline
